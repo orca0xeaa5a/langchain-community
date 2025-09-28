@@ -88,6 +88,7 @@ class DuckDuckGoSearchResults(BaseTool):
     api_wrapper: DuckDuckGoSearchAPIWrapper = Field(
         default_factory=DuckDuckGoSearchAPIWrapper
     )
+    region: str = "wt-wt"
     backend: str = "text"
     args_schema: Type[BaseModel] = DDGInput
     keys_to_include: Optional[List[str]] = None
@@ -102,6 +103,12 @@ class DuckDuckGoSearchResults(BaseTool):
     - 'list': Return a list of dictionaries of the search results.
     """
     response_format: Literal["content_and_artifact"] = "content_and_artifact"
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.api_wrapper.region = self.region
+        self.api_wrapper.max_results = self.max_results
+        self.api_wrapper.backend = self.backend
 
     def _run(
         self,
